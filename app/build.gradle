@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        testInstrumentationRunner rootProject.ext.android.testInstrumentationRunner
+    }
+    signingConfigs {
+        eng {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.keystore')
+            storePassword 'android'
+        }
+        prd {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.keystore')
+            storePassword 'android'
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.eng
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.prd
+        }
+    }
+
+    sourceSets {
+        constantFlavor1 {
+            java.srcDirs =  ['src/constantFlavor1', 'src/constantFlavor1/java', 'src/constantFlavor1/java/']
+        }
+        constantFlavor2 {
+            java.srcDirs =  ['src/constantFlavor2', 'src/constantFlavor2/java', 'src/constantFlavor2/java/']
+        }
+    }
+
+    productFlavors {
+        constantFlavor1 {
+            buildConfigField "boolean", "BOOLEAN_VALUE", "true"
+            manifestPlaceholders = [label:"constantFlavor1"]
+        }
+        constantFlavor2 {
+            buildConfigField "boolean", "BOOLEAN_VALUE", "false"
+            manifestPlaceholders = [label:"constantFlavor2"]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile rootProject.ext.dependencies["support-v7"]
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+}
